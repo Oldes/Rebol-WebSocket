@@ -2,6 +2,8 @@ Rebol [
 	title: "Rebol/WebSocket CI test"
 ]
 
+system/options/quiet: false
+
 print ["Running test on Rebol build:" mold to-block system/build]
 if exists? %websocket.reb [
 	;; make sure that we load a fresh extension

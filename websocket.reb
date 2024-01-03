@@ -16,7 +16,6 @@ Rebol [
 
 ;--- WebSocket Codec --------------------------------------------------
 append system/options/log [ws: 4]
-system/options/quiet: false
 register-codec [
 	name:  'ws
 	type:  'text
