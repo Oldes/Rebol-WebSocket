@@ -5,14 +5,13 @@ Rebol [
 	Date:    02-Jan-2024
 	Version: 0.2.0
 	Author:  @Oldes
-	Exports: [http-server decode-target to-CLF-idate]
 	Home:    https://github.com/Oldes/Rebol-WebSocket
 	Rights:  http://opensource.org/licenses/Apache-2.0
 	Purpose: {Communicate with a server over WebSocket's connection.}
 	History: [
 		01-Jan-2024 "Oldes" {Initial version}
 	]
-	Needs: [3.11.0]
+	Needs: [3.11.0] ;; used bit/hexadecimal integer syntax
 ]
 
 ;--- WebSocket Codec --------------------------------------------------
