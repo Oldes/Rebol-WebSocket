@@ -29,9 +29,10 @@ http-server/config/actor 8081 [
 	]
 	;-- WebSocket related actions                                                                
 	On-Read-Websocket: func[ctx final? opcode][
-		print ["WS opcode:" opcode "final frame:" final?]
+		sys/log/info 'HTTPD ["WS opcode:" opcode "final frame:" final?]
 		either opcode = 1 [
-			probe ctx/out/content: to string! ctx/inp/content
+			ctx/out/content: to string! ctx/inp/content
+			sys/log/info 'HTTPD mold ctx/out/content
 		][
 			? ctx/inp/content
 		]
@@ -40,7 +41,7 @@ http-server/config/actor 8081 [
 		reason: any [
 			select [
 				1000 "the purpose for which the connection was established has been fulfilled."
-				1001 "a browser navigated away from a page."
+				1001 "a client navigated away from a page."
 				1002 "a protocol error."
 				1003 "it has received a type of data it cannot accept."
 				1007 "it has received data within a message that was not consistent with the type of the message."
@@ -51,10 +52,10 @@ http-server/config/actor 8081 [
 			] code
 			ajoin ["an unknown reason (" code ")"]
 		]
-		print ["WS connection is closing because" reason]
+		sys/log/info 'HTTPD ["WS connection is closing because" reason]
 		unless empty? reason: ctx/inp/content [
 			;; optional client's reason
-			print ["Client's reason:" as-red to string! reason]
+			sys/log/info 'HTTPD ["Client's reason:" as-red to string! reason]
 		]
 	]
 ]

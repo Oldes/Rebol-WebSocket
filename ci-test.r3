@@ -21,14 +21,24 @@ wait 0:0:1
 unless all [
 	port? try/with [port: open ws://localhost:8081/echo] :print
 
-	port/awake: func [event /local port extra parent spec temp] [
-		port: event/port
-		sys/log/debug 'WS ["== WS-event:" as-red event/type]
+	;; Using custom awake handler...
+	port/awake: func [event /local port buffer temp] [
+		sys/log/more 'WS ["== WS-event:" as-red event/type]
 
+		port:  event/port
+		buffer: port/extra/buffer ;; used to store unprocessed raw data
+		
 		switch event/type [
 			read  [
-				sys/log/debug 'WS ["== raw-data:" as-blue port/data]
-				sys/log/debug 'WS ["== decoded: " as-green mold ws-decode port/data]
+				sys/log/debug 'WS ["== raw-data:" as-blue buffer]
+				temp: ws-decode buffer
+				if empty? temp [
+					;; the message is not complete...
+					sys/log/debug 'WS "== message not complete!"
+					read port
+					return false ;; don't wake up yet...
+				]
+				sys/log/debug 'WS ["== decoded: " as-green mold temp]
 			]
 		]
 		true
@@ -38,7 +48,6 @@ unless all [
 	port? try/with [write port 'ping] :print
 	port? try/with [write port "Hello"] :print
 	port? wait port
-	print "read.."
 	port? try/with [read port] :print
 	port? wait [port 10]
 	port? try/with [write port 'close] :print
